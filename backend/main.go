@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/database"
+	"backend\database"
 	"fmt"
 	"log"
 
