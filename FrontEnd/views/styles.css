@@ -53,7 +53,7 @@ nav input {
 .hero {
     text-align: center;
     padding: 100px 20px;
-    background: url('images/hero-bg.jpg') no-repeat center center/cover;
+    background: url('hero-bg.jpg') no-repeat center center/cover;
     color: #fff;
 }
 
