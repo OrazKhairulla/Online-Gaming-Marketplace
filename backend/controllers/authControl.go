@@ -15,3 +15,8 @@ func Register(c *gin.Context) {
 	// Save user to database logic here
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
+
+func Login(c *gin.Context) {
+	// Login logic here
+	c.JSON(http.StatusOK, gin.H{"message": "User logged in successfully"})
+}
