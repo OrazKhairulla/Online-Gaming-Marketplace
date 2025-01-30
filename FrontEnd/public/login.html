@@ -5,14 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Log - Login</title>
-    <link rel="stylesheet" href="/FrontEnd/views/styles.css">
+    <link rel="stylesheet" href="/FrontEnd/views/auth.css">
 </head>
 
 <body>
-    <div class="container">
+    <div class="container login-container">
         <h1>Login</h1>
-        <form>
-            
+        <form class="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit">Log In</button>
         </form>
     </div>
 </body>
