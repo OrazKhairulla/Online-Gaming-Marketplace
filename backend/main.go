@@ -1,9 +1,11 @@
 package main
 
 import (
-	"backend\database"
 	"fmt"
 	"log"
+
+	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/database"
+	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/routes"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +19,9 @@ func main() {
 		c.JSON(200, gin.H{"message": "Server is running!"})
 	})
 
+	routes.SetupRoutes(r)
 	port := ":8080"
-	fmt.Println("🚀 Server is running on", port)
+	fmt.Println("Server is running on", port)
 	if err := r.Run(port); err != nil {
 		log.Fatal(err)
 	}

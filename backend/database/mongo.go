@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client *mongo.Client
+var client *mongo.Client
 
 func ConnectDB() {
 	uri := "mongodb://localhost:27017"
@@ -20,20 +20,35 @@ func ConnectDB() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, clientOptions)
+	var err error
+	client, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatal("Ошибка подключения к MongoDB:", err)
+		log.Fatal("❌ Can not connect to MongoDB:", err)
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal("Ошибка проверки соединения с MongoDB:", err)
+		log.Fatal("❌ Can not ping MongoDB:", err)
 	}
 
-	fmt.Println("✅ Успешное подключение к MongoDB")
-	Client = client
+	fmt.Println("✅ Successfully connected to MongoDB")
 }
 
 func GetCollection(collectionName string) *mongo.Collection {
-	return Client.Database("game_log").Collection(collectionName)
+	if client == nil {
+		log.Fatal("❌ Database is not connected")
+	}
+	return client.Database("game_log").Collection(collectionName)
+}
+
+// CloseDB closes the MongoDB connection
+func CloseDB() {
+	if client != nil {
+		err := client.Disconnect(context.TODO())
+		if err != nil {
+			log.Fatal("❌ Can not disconnect from MongoDB:", err)
+		} else {
+			fmt.Println("✅ Connection to MongoDB is closed")
+		}
+	}
 }
