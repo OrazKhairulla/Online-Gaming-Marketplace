@@ -6,17 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Log - Register</title>
     <link rel="stylesheet" href="/FrontEnd/views/auth.css">
+    <a href="/FrontEnd/public/index.html" class="logo">GAME LOG</a>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <div class="video-background">
+        <video autoplay loop muted playsinline>
+            <source src="/FrontEnd/video/Timeline 2.mov" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
     <div class="container register-container">
         <h1>Register</h1>
-        <form class="register-form">
+        <form class="register-form" id="registerForm">
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username" required>
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label for="email">Email</label>
                 <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
@@ -24,9 +32,37 @@
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password" required>
             </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+            </div>
             <button type="submit">Register</button>
+            <p id="registrationMessage"></p>
         </form>
     </div>
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const registrationMessage = document.getElementById('registrationMessage');
+
+            if (password !== confirmPassword) {
+                registrationMessage.textContent = 'Passwords do not match!';
+                registrationMessage.style.color = 'red';
+                return;
+            }
+
+            // Basic validation passed
+            registrationMessage.textContent = 'Registration successful!';
+            registrationMessage.style.color = 'green';
+
+            // You can add further logic here, such as sending data to a server
+            // For now, we'll just clear the form
+            document.getElementById('registerForm').reset();
+        });
+    </script>
 </body>
 
 </html>
