@@ -120,5 +120,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 location.reload();
             });
         });
+
+         // "Buy All" button functionality
+            const buyAllButton = document.querySelector('.buy-all-button');
+            buyAllButton.addEventListener('click', function() {
+                 if (cartItems.length > 0) {
+                    // Get existing library items from localStorage
+                    let libraryItems = JSON.parse(localStorage.getItem('libraryItems')) || [];
+
+                    // Add each item in the cart to the library
+                    cartItems.forEach(item => {
+                        // Check if the game is already in the library
+                        const gameExists = libraryItems.some(libraryItem => libraryItem.title === item.title);
+
+                        if (!gameExists) {
+                            libraryItems.push({
+                                title: item.title,
+                                image: item.image
+                            });
+                        }
+                    });
+
+                    // Save updated library items to localStorage
+                    localStorage.setItem('libraryItems', JSON.stringify(libraryItems));
+
+                    alert('Thank you for your purchase! Games added to your library.'); // Replace with actual checkout logic
+                    localStorage.removeItem('cartItems'); // Clear the cart
+                    location.reload(); // Refresh the page
+                } else {
+                    alert('Your cart is empty.');
+                }
+            });
+    }
+     // Library page functionality
+    const libraryList = document.getElementById('library-list');
+    if (libraryList) {
+        let libraryItems = JSON.parse(localStorage.getItem('libraryItems')) || [];
+
+        if (libraryItems.length === 0) {
+            libraryList.innerHTML = '<p>Your library is empty.</p>';
+            return;
+        }
+
+        libraryItems.forEach(item => {
+            const gameCard = document.createElement('div');
+            gameCard.classList.add('game-card');
+
+            gameCard.innerHTML = `
+                <img src="${item.image}" alt="${item.title}">
+                <div class="game-card-content">
+                    <h3 class="game-card-title">${item.title}</h3>
+                </div>
+            `;
+
+            libraryList.appendChild(gameCard);
+        });
     }
 });

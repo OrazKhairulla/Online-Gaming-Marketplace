@@ -11,26 +11,24 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    min-height: 800px; /* Задайте минимальную высоту (подберите значение) */
+    min-height: 800px;
 }
 
 .games-grid {
     display: grid;
-    grid-template-columns: 1fr; /* Теперь у нас один столбец */
+    grid-template-columns: 1fr;
     gap: 50px;
     margin-top: 40px;
 }
 
 .game-card {
     display: flex;
-    flex-direction: row; /* Изменяем направление на горизонтальное */
+    flex-direction: row;
     transition: transform 0.3s, box-shadow 0.3s;
-    /* height: 100%;  Убираем фиксированную высоту */
-    height: 262px; /* Устанавливаем высоту карточки */
-    /* width: 1497px;  Устанавливаем ширину карточки */ /* Удаляем фиксированную ширину */
-    width: 100%; /* Растягиваем карточку на всю доступную ширину контейнера*/
+    height: 262px;
+    width: 100%;
     position: relative;
-    align-items: center; /* Выравниваем элементы по вертикали */
+    align-items: center;
 }
 
 .game-card:hover {
@@ -38,38 +36,32 @@ body {
 }
 
 .game-card img {
-    /* width: 100%; Убираем ширину 100% */
-    width: auto;  /*Автоматическая ширина, чтобы сохранить пропорции*/
-    max-width: 40%; /*Ограничиваем максимальную ширину изображения*/
-    height: 100%; /*Растягиваем изображение на всю высоту карточки*/
-    object-fit: cover; /*Масштабируем изображение с обрезкой, чтобы заполнить область*/
-    border-radius: 10px 0 0 10px; /* Скругляем углы слева */
+    width: auto;
+    max-width: 40%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px 0 0 10px;
     margin-bottom: 0;
 }
 
-
 .game-info {
-    width: 60%; /* Занимает оставшееся место справа от изображения */
+    width: 60%;
     height: 100%;
-    background-color: #333; /* Задаем фон для информационной области */
-    border-radius: 0 10px 10px 0; /* Скругляем углы справа */
-    padding: 20px; /* Добавляем отступы */
-    box-sizing: border-box; /* Чтобы padding не увеличивал ширину */
-    position: relative; /* Для позиционирования заголовка */
+    background-color: #333;
+    border-radius: 0 10px 10px 0;
+    padding: 20px;
+    box-sizing: border-box;
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-
 .game-card h3 {
     margin: 0;
     font-size: 1.3em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    /*position: absolute; /*Удаляем абсолютное позиционирование */
-    /*bottom: 10px; /*Удаляем  позиционирование снизу*/
-    left: 20px; /* Сдвигаем текст вправо, чтобы не перекрывать картинку */
-    /* background-color: rgba(255, 255, 255, 0.3);  Убираем фон с заголовка */
+    left: 20px;
     padding: 5px 10px;
     border-radius: 5px;
 }
@@ -82,7 +74,7 @@ header .menu-toggle {
     padding: 10px;
     margin-right: 10px;
     position: relative;
-    z-index: 10; /*Ensure button is above other elements*/
+    z-index: 10;
 }
 
 header .menu-toggle svg {
@@ -125,7 +117,7 @@ nav .logo {
     background-color: #2a2a2a;
     padding-top: 20px;
     transition: left 0.3s ease;
-    z-index: 1000; /* Ensure the sidebar is on top */
+    z-index: 1000;
 }
 
 .sidebar.open {
@@ -225,4 +217,16 @@ footer {
 
 .add-to-cart-btn:hover {
     background-color: #e65a50;
+}
+.add-to-library-btn {
+    background-color: #6c757d; /* Grey color */
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.3s;
+    margin-left: 5px; /* Add some spacing between the buttons */
+    align-self: flex-start; /* Выравниваем кнопку вверху контейнера */
 }
