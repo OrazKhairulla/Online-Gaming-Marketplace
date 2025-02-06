@@ -16,5 +16,14 @@ func SetupRoutes(r *gin.Engine) {
 		protected.GET("/protected", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "You are authorized"})
 		})
+
+		// Cart routes
+		protected.POST("/cart", controllers.AddToCart)
+		protected.GET("/cart", controllers.GetCart)
+		protected.DELETE("/cart", controllers.RemoveFromCart)
+
+		// Order routes
+		protected.POST("/orders", controllers.PlaceOrder)
+		protected.GET("/orders", controllers.GetOrders)
 	}
 }

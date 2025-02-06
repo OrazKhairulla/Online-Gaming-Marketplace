@@ -15,9 +15,9 @@ func main() {
 
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Server is running!"})
-	})
+	// used to serve static files of front
+	r.Static("/FrontEnd", "../FrontEnd")
+	r.StaticFile("/", "../FrontEnd/public/index.html")
 
 	routes.SetupRoutes(r)
 	port := ":8080"
