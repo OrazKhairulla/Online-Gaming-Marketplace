@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"log"
 	"net/http"
 
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/database"
@@ -9,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // Add item to cart
@@ -27,8 +27,9 @@ func AddToCart(c *gin.Context) {
 	filter := bson.M{"user_id": userObjectID}
 	update := bson.M{"$push": bson.M{"items": cartItem}}
 
-	_, err := collection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
+		log.Println("Error adding to cart:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error adding to cart"})
 		return
 	}
@@ -41,7 +42,7 @@ func GetCart(c *gin.Context) {
 	userID := c.GetString("userID") // Assume userID is set in middleware
 	userObjectID, _ := primitive.ObjectIDFromHex(userID)
 
-	collection := database.GetCollection("carts")
+	collection := database.GetCollection("cart")
 	var cart model.Cart
 	err := collection.FindOne(context.TODO(), bson.M{"user_id": userObjectID}).Decode(&cart)
 	if err != nil {
@@ -69,6 +70,7 @@ func RemoveFromCart(c *gin.Context) {
 
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
+		log.Println("Error removing from cart:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error removing from cart"})
 		return
 	}

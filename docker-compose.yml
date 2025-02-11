@@ -6,6 +6,8 @@ services:
       - "8080:8080"
     depends_on:
       - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/game_log
   mongodb:
     image: mongo
     ports:

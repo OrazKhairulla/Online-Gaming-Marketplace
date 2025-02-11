@@ -21,7 +21,7 @@ func main() {
 
 	routes.SetupRoutes(r)
 	port := ":8080"
-	fmt.Println("Server is running on", port)
+	fmt.Println("Server is running on http://localhost" + port)
 	if err := r.Run(port); err != nil {
 		log.Fatal(err)
 	}

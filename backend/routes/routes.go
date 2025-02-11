@@ -19,7 +19,6 @@ func SetupRoutes(r *gin.Engine) {
 
 		// Cart routes
 		protected.POST("/cart", controllers.AddToCart)
-		protected.GET("/cart", controllers.GetCart)
 		protected.DELETE("/cart", controllers.RemoveFromCart)
 
 		// Order routes
