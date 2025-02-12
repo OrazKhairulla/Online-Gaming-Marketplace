@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener("DOMContentLoaded", function () {
     const username = localStorage.getItem("username");
-    const navList = document.querySelector("nav ul");
+    const navList = document.querySelector("#user-nav");
 
     if (username) {
         // Удалить кнопки "Login" и "Register"
