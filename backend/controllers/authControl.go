@@ -65,37 +65,43 @@ func Register(c *gin.Context) {
 // Логин пользователя
 func Login(c *gin.Context) {
 	var input struct {
-		Email    string `json:"email" binding:"required"`
+		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
+	// Проверка на корректность входных данных
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Поиск пользователя по email
+	// Поиск пользователя по username
 	collection := database.GetCollection("users")
 	var user model.User
-	err := collection.FindOne(context.TODO(), bson.M{"email": input.Email}).Decode(&user)
+	err := collection.FindOne(context.TODO(), bson.M{"username": input.Username}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверное имя пользователя или пароль"})
 		return
 	}
 
 	// Проверка пароля
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверное имя пользователя или пароль"})
 		return
 	}
 
 	// Генерация JWT токена
-	token, err := jwtServices.GenerateToken(user.Email)
+	token, err := jwtServices.GenerateToken(user.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	// Возвращаем успешный ответ с токеном и сообщением
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "Login successful",
+		"token":    token,
+		"redirect": "/FrontEnd/public/index.html", // Добавляем URL для редиректа
+	})
 }

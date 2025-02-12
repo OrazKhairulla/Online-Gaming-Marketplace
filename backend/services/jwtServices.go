@@ -8,10 +8,11 @@ import (
 
 var jwtSecret = []byte("your-secret-key")
 
-func GenerateToken(email string) (string, error) {
+// GenerateToken генерирует JWT токен с username
+func GenerateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email": email,
-		"exp":   time.Now().Add(24 * time.Hour).Unix(),
+		"username": username, // Изменено с "email" на "username"
+		"exp":      time.Now().Add(24 * time.Hour).Unix(),
 	})
 
 	return token.SignedString(jwtSecret)
