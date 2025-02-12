@@ -1,4 +1,4 @@
-package jwtServices
+package services
 
 import (
 	"time"
@@ -6,14 +6,13 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-var jwtSecret = []byte("your_secret_key") // Change this to a secure secret
+var jwtSecret = []byte("your-secret-key")
 
 func GenerateToken(email string) (string, error) {
-	claims := jwt.MapClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"email": email,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
-	}
+		"exp":   time.Now().Add(24 * time.Hour).Unix(),
+	})
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString(jwtSecret)
 }

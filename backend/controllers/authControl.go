@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"net/http"
+	"time"
 
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/database"
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/model"
@@ -13,72 +14,88 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Register a new user
+// Регистрация пользователя
 func Register(c *gin.Context) {
-	var requestBody model.User
+	var input struct {
+		Username string `json:"username" binding:"required"`
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
 
-	// Bind request body to struct
-	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Check if user already exists
+	// Проверка на существование пользователя
 	collection := database.GetCollection("users")
 	var existingUser model.User
-	err := collection.FindOne(context.TODO(), bson.M{"email": requestBody.Email}).Decode(&existingUser)
+	err := collection.FindOne(context.TODO(), bson.M{"email": input.Email}).Decode(&existingUser)
 	if err == nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "Email already in use"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь с таким email уже существует"})
 		return
 	}
 
-	// Hash password before storing
-	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(requestBody.Password), bcrypt.DefaultCost)
-	requestBody.Password = string(hashedPassword)
-
-	// Create user object
-	newUser := model.User{
-		ID:       primitive.NewObjectID(),
-		Email:    requestBody.Email,
-		Password: requestBody.Password,
+	// Хеширование пароля
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка хеширования пароля"})
+		return
 	}
 
-	// Insert user into MongoDB
+	// Создаем нового пользователя
+	newUser := model.User{
+		Username:   input.Username,
+		Email:      input.Email,
+		Password:   string(hashedPassword),
+		OwnedGames: []primitive.ObjectID{},
+		CreatedAt:  time.Now(),
+	}
+
+	// Сохранение пользователя в MongoDB
 	_, err = collection.InsertOne(context.TODO(), newUser)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания пользователя"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
+	c.JSON(http.StatusOK, gin.H{"message": "Пользователь успешно зарегистрирован"})
 }
 
-// Login user and generate JWT token
+// Логин пользователя
 func Login(c *gin.Context) {
-	var requestBody model.User
-	if err := c.ShouldBindJSON(&requestBody); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+	var input struct {
+		Email    string `json:"email" binding:"required"`
+		Password string `json:"password" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
+	// Поиск пользователя по email
 	collection := database.GetCollection("users")
-
-	// Find user by email
 	var user model.User
-	err := collection.FindOne(context.TODO(), bson.M{"email": requestBody.Email}).Decode(&user)
+	err := collection.FindOne(context.TODO(), bson.M{"email": input.Email}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
 		return
 	}
 
-	// Compare password hashes
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(requestBody.Password)); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+	// Проверка пароля
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный email или пароль"})
 		return
 	}
 
-	// Generate JWT token
-	token, _ := jwtServices.GenerateToken(user.Email)
+	// Генерация JWT токена
+	token, err := jwtServices.GenerateToken(user.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
