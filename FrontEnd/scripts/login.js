@@ -14,6 +14,11 @@ document.querySelector(".login-form").addEventListener("submit", async function 
 
         if (response.ok) {
             console.log("Login successful");
+
+            // Сохраняем имя пользователя в localStorage
+            localStorage.setItem("username", username);
+
+            // Перенаправление на главную страницу
             window.location.href = "/FrontEnd/public/index.html";
         } else {
             const errorData = await response.json();

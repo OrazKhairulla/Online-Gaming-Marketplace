@@ -236,3 +236,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    const username = localStorage.getItem("username");
+    const navList = document.querySelector("nav ul");
+
+    if (username) {
+        // Удалить кнопки "Login" и "Register"
+        navList.innerHTML = "";
+
+        // Добавить имя пользователя и кнопку выхода
+        const userElement = document.createElement("li");
+        const logoutElement = document.createElement("li");
+
+        // Ссылка на библиотеку с именем пользователя
+        const userLink = document.createElement("a");
+        userLink.href = "/FrontEnd/public/library.html";
+        userLink.textContent = username;
+
+        // Кнопка выхода
+        const logoutLink = document.createElement("a");
+        logoutLink.href = "#";
+        logoutLink.textContent = "Logout";
+        logoutLink.addEventListener("click", function () {
+            // Удаляем пользователя из localStorage и перезагружаем страницу
+            localStorage.removeItem("username");
+            window.location.href = "/FrontEnd/public/index.html";
+        });
+
+        userElement.appendChild(userLink);
+        logoutElement.appendChild(logoutLink);
+        navList.appendChild(userElement);
+        navList.appendChild(logoutElement);
+    }
+});
