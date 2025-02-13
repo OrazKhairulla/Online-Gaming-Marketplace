@@ -32,8 +32,31 @@
     </aside>
 
     <div class="container">
-        <h1>Your Library</h1>
-        <div id="library-list" class="library-grid">
+        <div id="auth-message" style="display:none; text-align:center; padding: 50px;">
+            <h1>Please Register or Login</h1>
+            <p>You need to be logged in to view your library.</p>
+            <a href="/FrontEnd/public/login.html">Login</a> or <a href="/FrontEnd/public/register.html">Register</a>
+        </div>
+
+        <section id="account-info" style="display:none;">
+            <h1>Account Information</h1>
+            <p>
+                Username:
+                <span id="username-display"></span>
+                <input type="text" id="username-input" style="display:none;">
+            </p>
+            <p>
+                Email:
+                <span id="email-display"></span>
+                <input type="email" id="email-input" style="display:none;">
+            </p>
+            <button id="edit-profile-btn">Edit Profile</button>
+            <button id="save-profile-btn" style="display:none;">Save</button>
+        </section>
+
+        <h1 id="library-header" style="display:none;">Your Library</h1>
+
+        <div id="library-list" class="library-grid" style="display:none;">
             <!-- Games will be displayed here -->
         </div>
     </div>
@@ -41,6 +64,7 @@
     <footer>
         <p>© 2025 GAME LOG. All rights reserved.</p>
     </footer>
+    <script src="/FrontEnd/scripts/library.js"></script>
     <script src="/FrontEnd/scripts/app.js"></script>
 </body>
 

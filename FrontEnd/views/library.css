@@ -156,3 +156,93 @@ footer {
     color: #fff;
     margin-top: 50px;
 }
+
+#account-info {
+    background-color: #333;
+    border-radius: 15px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+#account-info h1 {
+    font-size: 2em;
+    color: #eee;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+#account-info p {
+    font-size: 1.2em;
+    color: #ccc;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+/* Стили для input */
+#account-info input[type="text"],
+#account-info input[type="email"] {
+    background-color: #444;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 8px;
+    font-size: 1.1em;
+    margin-left: 5px;
+    width: auto; /* Автоматическая ширина */
+    display: inline; /* Важно для правильного отображения */
+}
+
+/* Убираем рамку при фокусе */
+#account-info input[type="text"]:focus,
+#account-info input[type="email"]:focus {
+    outline: none;
+    border: 1px solid #ff6f61; /* Добавляем рамку при фокусе */
+}
+
+#account-info button {
+    background-color: #ff6f61;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Добавляем отступ сверху для кнопок */
+}
+
+#account-info button:hover {
+    background-color: #e65a50;
+}
+
+#auth-message {
+    text-align: center;
+    padding: 50px;
+    background-color: #333;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: #eee;
+}
+
+#auth-message h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+#auth-message p {
+    font-size: 1.2em;
+    margin-bottom: 30px;
+}
+
+#auth-message a {
+    color: #ff6f61;
+    text-decoration: none;
+    font-size: 1.2em;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+#auth-message a:hover {
+    color: #e65a50;
+}

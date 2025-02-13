@@ -17,6 +17,9 @@ func SetupRoutes(r *gin.Engine) {
 			c.JSON(200, gin.H{"message": "You are authorized"})
 		})
 
+		// User routes
+		protected.POST("/user/update", controllers.UpdateUser) // Добавлен маршрут для обновления пользователя
+
 		// Cart routes
 		protected.POST("/cart", controllers.AddToCart)
 		protected.DELETE("/cart", controllers.RemoveFromCart)

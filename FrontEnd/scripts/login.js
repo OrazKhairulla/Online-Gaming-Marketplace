@@ -14,9 +14,16 @@ document.querySelector(".login-form").addEventListener("submit", async function 
 
         if (response.ok) {
             console.log("Login successful");
+            const data = await response.json(); // Получаем данные из ответа
 
-            // Сохраняем имя пользователя в localStorage
+            // Сохраняем имя пользователя и email в localStorage
             localStorage.setItem("username", username);
+             localStorage.setItem("token", data.token); // Сохраняем токен
+
+            //Проверяем, пришел ли email
+            if (data.email) {
+                 localStorage.setItem("email", data.email);
+            }
 
             // Перенаправление на главную страницу
             window.location.href = "/FrontEnd/public/index.html";

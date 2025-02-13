@@ -270,3 +270,81 @@ document.addEventListener("DOMContentLoaded", function () {
         navList.appendChild(logoutElement);
     }
 });
+
+// Account Information section
+const usernameDisplay = document.getElementById('username-display');
+const emailDisplay = document.getElementById('email-display');
+const usernameInput = document.getElementById('username-input');
+const emailInput = document.getElementById('email-input');
+const editProfileBtn = document.getElementById('edit-profile-btn');
+const saveProfileBtn = document.getElementById('save-profile-btn');
+
+if (usernameDisplay && emailDisplay && usernameInput && emailInput && editProfileBtn && saveProfileBtn) {
+    const username = localStorage.getItem('username');
+    const email = localStorage.getItem('email');
+
+    if (username) {
+        usernameDisplay.textContent = username;
+        usernameInput.value = username;
+    }
+
+    if (email) {
+        emailDisplay.textContent = email;
+        emailInput.value = email;
+    }
+
+    editProfileBtn.addEventListener('click', function() {
+        usernameDisplay.style.display = 'none';
+        emailDisplay.style.display = 'none';
+        usernameInput.style.display = 'inline';
+        emailInput.style.display = 'inline';
+        editProfileBtn.style.display = 'none';
+        saveProfileBtn.style.display = 'inline';
+    });
+
+    saveProfileBtn.addEventListener('click', async function() {
+        const newUsername = usernameInput.value;
+        const newEmail = emailInput.value;
+
+        try {
+            const response = await fetch('/api/user/update', { // Замените на ваш actual API endpoint
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('token') // Если требуется авторизация
+                },
+                body: JSON.stringify({ username: newUsername, email: newEmail })
+            });
+
+            if (response.ok) {
+                // Обработка успешного ответа
+                console.log('Profile updated successfully!');
+                localStorage.setItem('username', newUsername);
+
+                // Проверяем, что email пришел с сервера
+                if (newEmail) {
+                    localStorage.setItem('email', newEmail);
+                    emailDisplay.textContent = newEmail;
+                }
+
+                usernameDisplay.textContent = newUsername;
+
+            } else {
+                // Обработка ошибки
+                console.error('Error updating profile:', response.statusText);
+                alert('Failed to update profile. Please try again.'); // Или отобразите более информативное сообщение об ошибке
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            alert('An error occurred. Please try again later.');
+        }
+
+        // Возвращаем все в исходное состояние
+        usernameDisplay.style.display = 'inline';
+        emailDisplay.style.display = 'inline';
+        usernameInput.style.display = 'none';
+        emailInput.style.display = 'none';
+        editProfileBtn.style.display = 'inline';
+        saveProfileBtn.style.display = 'none';
+    });
+}

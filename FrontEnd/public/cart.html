@@ -13,7 +13,7 @@
     <header>
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5 0 0 1 0 1H3a.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5 0 0 1 0 1H3a.5 0 0 1-.5-.5zm0-4a.5 0 0 1 .5-.5h10a.5 0 0 1 0 1H3a.5 0 0 1-.5-.5z"/>
             </svg>
         </button>
         <nav>
@@ -32,20 +32,29 @@
     </aside>
 
     <div class="container">
-        <h1>Your Cart</h1>
-        <div class="cart-items">
-            <!-- Items will be added here -->
+        <div id="auth-message" style="display:none; text-align:center; padding: 50px;">
+            <h1>Please Register or Login</h1>
+            <p>You need to be logged in to view your cart.</p>
+            <a href="/FrontEnd/public/login.html">Login</a> or <a href="/FrontEnd/public/register.html">Register</a>
         </div>
-        <div class="cart-total">
-            <p>Total: $0.00</p>
+
+        <div class="cart-content" style="display:none;">
+            <h1>Your Cart</h1>
+            <div class="cart-items">
+                <!-- Items will be added here -->
+            </div>
+            <div class="cart-total">
+                <p>Total: $0.00</p>
+            </div>
+            <button class="buy-all-button">Buy All</button>
         </div>
-        <button class="buy-all-button">Buy All</button>
     </div>
 
     <footer>
         <p>© 2025 GAME LOG. All rights reserved.</p>
     </footer>
-     <script src="/FrontEnd/scripts/app.js"></script>
+    <script src="/FrontEnd/scripts/cart.js"></script>
+    <script src="/FrontEnd/scripts/app.js"></script>
 </body>
 
 </html>

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"time"
 
@@ -98,10 +99,64 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Возвращаем успешный ответ с токеном и сообщением
+	// Возвращаем успешный ответ с токеном и сообщением + email
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "Login successful",
 		"token":    token,
-		"redirect": "/FrontEnd/public/index.html", // Добавляем URL для редиректа
+		"email":    user.Email, // <---- Добавили email
+		"redirect": "/FrontEnd/public/index.html",
 	})
+}
+
+// UpdateUser обновляет имя пользователя и email
+func UpdateUser(c *gin.Context) {
+	userID := c.GetString("userID") // Получаем ID пользователя из middleware
+	if userID == "" {
+		log.Println("userID not found in context")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		log.Println("Invalid userID format:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	var input struct {
+		Username string `json:"username"`
+		Email    string `json:"email"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Проверяем, не занят ли email другим пользователем (опционально)
+	collection := database.GetCollection("users")
+	var existingUser model.User
+	err = collection.FindOne(context.TODO(), bson.M{"email": input.Email, "_id": bson.M{"$ne": userObjectID}}).Decode(&existingUser)
+	if err == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь с таким email уже существует"})
+		return
+	}
+
+	// Обновляем пользователя в MongoDB
+	update := bson.M{"$set": bson.M{"username": input.Username, "email": input.Email}}
+	result, err := collection.UpdateOne(context.TODO(), bson.M{"_id": userObjectID}, update)
+	if err != nil {
+		log.Println("Error updating user:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обновления пользователя"})
+		return
+	}
+
+	if result.ModifiedCount == 0 {
+		log.Println("User not found or no changes applied")
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found or no changes applied"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
 }
