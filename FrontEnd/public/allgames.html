@@ -6,14 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Log - All Games</title>
     <link rel="stylesheet" href="/FrontEnd/views/allgames.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
     <header>
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list"
+                viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
             </svg>
         </button>
         <nav>
@@ -23,8 +27,10 @@
                     <div class="search-container">
                         <input type="text" placeholder="Search" class="search-input">
                         <button type="submit" class="search-button" aria-label="Search">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-search" viewBox="0 0 16 16">
+                                <path
+                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                             </svg>
                         </button>
                     </div>
@@ -48,36 +54,52 @@
             <!-- Игры будут загружены динамически -->
         </div>
     </div>
-    
+
     <script>
         document.addEventListener("DOMContentLoaded", async function () {
             const gamesGrid = document.getElementById("all-games-grid");
+            const searchInput = document.querySelector('.search-input');
 
-            try {
-                const response = await fetch("/api/games/getall");
-                if (!response.ok) throw new Error("Failed to fetch games");
+            async function loadGames(searchTerm = "") {
+                try {
+                    const url = searchTerm
+                        ? `/api/games/search?title=${encodeURIComponent(searchTerm)}`
+                        : "/api/games/getall";
 
-                const games = await response.json();
-                gamesGrid.innerHTML = ""; // Очищаем текущий контент
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Failed to fetch games");
 
-                games.forEach((game) => {
-                    const gameCard = document.createElement("div");
-                    gameCard.classList.add("game-card");
+                    const games = await response.json();
+                    gamesGrid.innerHTML = ""; // Очищаем текущий контент
 
-                    gameCard.innerHTML = `
-              <img src="${game.image_url}" alt="${game.title}">
-              <div class="game-info">
-                <h3>${game.title}</h3>
-                <p>${game.description}</p>
-                <p>Price: $${game.price.toFixed(2)}</p>
-                <button class="add-to-cart-btn" data-game-id="${game.id}">Add to Cart</button>
-              </div>
-            `;
-                    gamesGrid.appendChild(gameCard);
-                });
-            } catch (error) {
-                console.error("Failed to load games:", error);
+                    games.forEach((game) => {
+                        const gameCard = document.createElement("div");
+                        gameCard.classList.add("game-card");
+
+                        gameCard.innerHTML = `
+                            <img src="${game.image_url}" alt="${game.title}">
+                            <div class="game-info">
+                                <h3>${game.title}</h3>
+                                <p>${game.description}</p>
+                                <p>Price: $${game.price.toFixed(2)}</p>
+                                <button class="add-to-cart-btn" data-game-id="${game.id}">Add to Cart</button>
+                            </div>
+                        `;
+                        gamesGrid.appendChild(gameCard);
+                    });
+                } catch (error) {
+                    console.error("Failed to load games:", error);
+                }
             }
+
+            // Load all games initially
+            loadGames();
+
+            // Add event listener for search
+            searchInput.addEventListener("input", function () {
+                const searchTerm = searchInput.value.trim();
+                loadGames(searchTerm);
+            });
         });
     </script>
     <script src="/FrontEnd/scripts/app.js"></script>

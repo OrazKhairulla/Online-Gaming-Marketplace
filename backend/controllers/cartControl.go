@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/database"
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/model"
@@ -20,12 +21,15 @@ func AddToCart(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetString("userID") // Assume userID is set in middleware
+	userID := c.GetString("userID") // UserID is retrieved from middleware
 	userObjectID, _ := primitive.ObjectIDFromHex(userID)
 
 	collection := database.GetCollection("carts")
 	filter := bson.M{"user_id": userObjectID}
-	update := bson.M{"$push": bson.M{"items": cartItem}}
+	update := bson.M{
+		"$push": bson.M{"items": cartItem},
+		"$set":  bson.M{"updated_at": time.Now()},
+	}
 
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
@@ -39,10 +43,10 @@ func AddToCart(c *gin.Context) {
 
 // Get cart items
 func GetCart(c *gin.Context) {
-	userID := c.GetString("userID") // Assume userID is set in middleware
+	userID := c.GetString("userID")
 	userObjectID, _ := primitive.ObjectIDFromHex(userID)
 
-	collection := database.GetCollection("cart")
+	collection := database.GetCollection("carts")
 	var cart model.Cart
 	err := collection.FindOne(context.TODO(), bson.M{"user_id": userObjectID}).Decode(&cart)
 	if err != nil {
@@ -61,7 +65,7 @@ func RemoveFromCart(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetString("userID") // Assume userID is set in middleware
+	userID := c.GetString("userID")
 	userObjectID, _ := primitive.ObjectIDFromHex(userID)
 
 	collection := database.GetCollection("carts")

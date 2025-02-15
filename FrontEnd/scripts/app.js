@@ -26,21 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Search functionality
+    // Search functionality обновил мен ахахахаха
     const searchInput = document.querySelector('.search-input');
-    if (searchInput) { // Проверяем, что searchInput существует
+    if (searchInput) {
         const gameCardsSearch = document.querySelectorAll('.game-card');
 
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function () {
             const searchTerm = searchInput.value.toLowerCase();
-
             gameCardsSearch.forEach(card => {
                 const gameTitle = card.querySelector('h3').textContent.toLowerCase();
-                if (gameTitle.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
+                card.style.display = gameTitle.includes(searchTerm) ? 'flex' : 'none';
             });
         });
     }
@@ -48,26 +43,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Add to cart functionality
     const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
     addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const gameTitle = button.dataset.gameTitle;
-            const gameImage = button.dataset.gameImage;
+        button.addEventListener('click', async function () {
+            const gameID = button.dataset.gameId;
+            const userID = localStorage.getItem('userID'); // Assume userID is stored on login
 
-            // Get existing cart items from localStorage
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            if (!userID) {
+                alert("Please log in to add items to the cart.");
+                window.location.href = "/FrontEnd/public/login.html";
+                return;
+            }
 
-            // Add new item to cart
-            cartItems.push({
-                title: gameTitle,
-                image: gameImage,
-                quantity: 1 // You can adjust quantity later
-            });
+            try {
+                const response = await fetch('/api/cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ game_id: gameID })
+                });
 
-            // Save updated cart items to localStorage
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-            alert(`${gameTitle} added to cart!`); // Optional feedback message
+                if (response.ok) {
+                    alert("Game added to cart!");
+                } else {
+                    const error = await response.json();
+                    alert("Error adding to cart: " + error.error);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("An error occurred. Please try again later.");
+            }
         });
     });
+
+
 
     // Cart page functionality
     const cartItemsContainer = document.querySelector('.cart-items');
