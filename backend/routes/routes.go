@@ -9,6 +9,7 @@ import (
 func SetupRoutes(r *gin.Engine) {
 	r.POST("/api/auth/register", controllers.Register)
 	r.POST("/api/auth/login", controllers.Login)
+	r.GET("/api/games/getall", controllers.GetAllGames)
 
 	protected := r.Group("/api")
 	protected.Use(middleware.AuthMiddleware())
