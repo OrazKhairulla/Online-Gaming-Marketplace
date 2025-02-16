@@ -26,58 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Search functionality обновил мен ахахахаха
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        const gameCardsSearch = document.querySelectorAll('.game-card');
-
-        searchInput.addEventListener('input', function () {
-            const searchTerm = searchInput.value.toLowerCase();
-            gameCardsSearch.forEach(card => {
-                const gameTitle = card.querySelector('h3').textContent.toLowerCase();
-                card.style.display = gameTitle.includes(searchTerm) ? 'flex' : 'none';
-            });
-        });
-    }
-
-    // Add to cart functionality
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', async function () {
-            const gameID = button.dataset.gameId;
-            const userID = localStorage.getItem('userID'); // Assume userID is stored on login
-
-            if (!userID) {
-                alert("Please log in to add items to the cart.");
-                window.location.href = "/FrontEnd/public/login.html";
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/cart', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify({ game_id: gameID })
-                });
-
-                if (response.ok) {
-                    alert("Game added to cart!");
-                } else {
-                    const error = await response.json();
-                    alert("Error adding to cart: " + error.error);
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred. Please try again later.");
-            }
-        });
-    });
-
-
-
     // Cart page functionality
     const cartItemsContainer = document.querySelector('.cart-items');
     if (cartItemsContainer) { //* добавил проверку, чтобы скрипт выполнялся только на странице корзины*/
@@ -135,25 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-         // Quantity change functionality
-        const quantityInputs = document.querySelectorAll('.cart-item-quantity input');
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const indexToUpdate = parseInt(this.dataset.index);
-                const newQuantity = parseInt(this.value);
-
-                if (newQuantity > 0) {
-                    cartItems[indexToUpdate].quantity = newQuantity;
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                    updateCartTotal(); // Update the total on quantity change
-                } else {
-                    // If quantity is set to 0, remove the item
-                    cartItems.splice(indexToUpdate, 1);
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                    location.reload(); // Refresh the page to update the cart
-                }
-            });
-        });
         // "Buy All" button functionality
         const buyAllButton = document.querySelector('.buy-all-button');
         buyAllButton.addEventListener('click', function() {

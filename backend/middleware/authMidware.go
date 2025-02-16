@@ -4,11 +4,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecret = []byte("your_secret_key")
+var jwtSecret = []byte("your-secret-key") // Используй тот же ключ
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -28,6 +28,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString := parts[1]
 
+		// Парсинг токена с использованием jwt/v4
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return jwtSecret, nil
 		})
@@ -45,7 +46,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Set user ID in context
+		// Извлечение user_id и добавление его в контекст
 		c.Set("userID", claims["user_id"])
 		c.Next()
 	}
