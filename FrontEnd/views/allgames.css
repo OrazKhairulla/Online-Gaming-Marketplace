@@ -1,3 +1,5 @@
+/* allgames.css */
+
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -16,7 +18,7 @@
     display: flex;
     flex-direction: row;
     transition: transform var(--transition), box-shadow var(--transition);
-    height: 262px;
+    height: 262px; /*  Рассмотрите возможность удаления или адаптивности */
     width: 100%;
     position: relative;
     align-items: center;
@@ -46,39 +48,28 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: flex-start; /*  Выравниваем элементы по началу (слева) */
+    /* justify-content: space-between;  <-- УДАЛЯЕМ ЭТО */
 }
 
 .game-card__title {
-    margin: 0;
+    margin: 0 0 10px 0; /*  Сверху, Справа, Снизу, Слева */
     font-size: 1.3em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    left: 20px;
-    padding: 5px 10px;
-    border-radius: var(--border-radius);
+}
+
+/*  Стилизуем текстовый контент единообразно */
+.game-card__info p {
+    margin: 5px 0; /*  Единообразные отступы для всех параграфов */
 }
 
 .game-card__add-to-cart-btn,
-.game-card__add-to-library-btn {
+.game-card__add-to-library-btn{
     color: var(--text-color);
     border: none;
     padding: 8px 12px;
     border-radius: var(--border-radius);
     cursor: pointer;
     font-size: 0.9em;
-    transition: background-color var(--transition);
-    align-self: flex-start;
-}
-
-.game-card__add-to-cart-btn {
-    background-color: var(--primary-color);
-}
-
-.game-card__add-to-cart-btn:hover {
-    background-color: #e65a50;
-}
-
-.game-card__add-to-library-btn {
-    background-color: #6c757d;
-    margin-left: 5px;
+    transition: background-color var
 }
