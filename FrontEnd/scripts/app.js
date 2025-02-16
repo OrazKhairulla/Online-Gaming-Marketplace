@@ -26,49 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Search functionality
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) { // Проверяем, что searchInput существует
-        const gameCardsSearch = document.querySelectorAll('.game-card');
-
-        searchInput.addEventListener('input', function() {
-            const searchTerm = searchInput.value.toLowerCase();
-
-            gameCardsSearch.forEach(card => {
-                const gameTitle = card.querySelector('h3').textContent.toLowerCase();
-                if (gameTitle.includes(searchTerm)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-    }
-
-    // Add to cart functionality
-    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const gameTitle = button.dataset.gameTitle;
-            const gameImage = button.dataset.gameImage;
-
-            // Get existing cart items from localStorage
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-
-            // Add new item to cart
-            cartItems.push({
-                title: gameTitle,
-                image: gameImage,
-                quantity: 1 // You can adjust quantity later
-            });
-
-            // Save updated cart items to localStorage
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-            alert(`${gameTitle} added to cart!`); // Optional feedback message
-        });
-    });
-
     // Cart page functionality
     const cartItemsContainer = document.querySelector('.cart-items');
     if (cartItemsContainer) { //* добавил проверку, чтобы скрипт выполнялся только на странице корзины*/
@@ -126,25 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-         // Quantity change functionality
-        const quantityInputs = document.querySelectorAll('.cart-item-quantity input');
-        quantityInputs.forEach(input => {
-            input.addEventListener('change', function() {
-                const indexToUpdate = parseInt(this.dataset.index);
-                const newQuantity = parseInt(this.value);
-
-                if (newQuantity > 0) {
-                    cartItems[indexToUpdate].quantity = newQuantity;
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                    updateCartTotal(); // Update the total on quantity change
-                } else {
-                    // If quantity is set to 0, remove the item
-                    cartItems.splice(indexToUpdate, 1);
-                    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                    location.reload(); // Refresh the page to update the cart
-                }
-            });
-        });
         // "Buy All" button functionality
         const buyAllButton = document.querySelector('.buy-all-button');
         buyAllButton.addEventListener('click', function() {
