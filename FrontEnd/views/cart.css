@@ -1,3 +1,5 @@
+/* cart.css */
+
 .container {
     max-width: 900px;
     margin: 20px auto;
@@ -109,7 +111,7 @@ h1 {
     transform: scale(1.1);
 }
 
-.cart__buy-all-btn {
+.cart__buy-all-btn {  /*  СТИЛИ ДЛЯ КНОПКИ "BUY ALL" */
     display: block;
     width: 220px;
     margin: 20px auto;
