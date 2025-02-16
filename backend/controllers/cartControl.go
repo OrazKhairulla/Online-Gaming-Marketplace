@@ -92,31 +92,64 @@ func AddToCart(c *gin.Context) {
 
 // Get cart items
 func GetCart(c *gin.Context) {
-	userID, exists := c.Get("userID")
+	log.Println("GetCart endpoint hit") // Логирование для проверки
+	userIDStr, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authorized"})
+		return
+	}
+
+	userID, err := primitive.ObjectIDFromHex(userIDStr.(string)) // Преобразование userID в ObjectID
+	if err != nil {
+		log.Println("Invalid user ID format:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
 		return
 	}
 
 	collection := database.GetCollection("cart")
 	var cart model.Cart
-	err := collection.FindOne(context.TODO(), bson.M{"user_id": userID}).Decode(&cart)
+
+	// Фильтр по user_id
+	err = collection.FindOne(context.TODO(), bson.M{"user_id": userID}).Decode(&cart)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
+		if err == mongo.ErrNoDocuments {
+			log.Println("Cart not found for user:", userIDStr)
+			c.JSON(http.StatusNotFound, gin.H{"error": "Cart not found"})
+		} else {
+			log.Println("Error fetching cart:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching cart"})
+		}
 		return
 	}
 
+	// Возвращаем только товары пользователя
 	c.JSON(http.StatusOK, cart)
 }
 
 // Remove item from cart
 func RemoveFromCart(c *gin.Context) {
+	// Извлечение userID из контекста
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authorized"})
 		return
 	}
 
+	// Преобразование userID в строку
+	userIDStr, ok := userID.(string)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	// Преобразование userID в ObjectID
+	userIDObj, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	// Извлечение game_id из параметров URL
 	gameID := c.Param("game_id")
 	objectID, err := primitive.ObjectIDFromHex(gameID)
 	if err != nil {
@@ -124,10 +157,14 @@ func RemoveFromCart(c *gin.Context) {
 		return
 	}
 
+	// Получение коллекции cart
 	collection := database.GetCollection("cart")
-	filter := bson.M{"user_id": userID}
+
+	// Фильтр по user_id и обновление items
+	filter := bson.M{"user_id": userIDObj}
 	update := bson.M{"$pull": bson.M{"items": bson.M{"game_id": objectID}}}
 
+	// Обновление корзины
 	_, err = collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		log.Println("Error removing from cart:", err)
@@ -135,5 +172,6 @@ func RemoveFromCart(c *gin.Context) {
 		return
 	}
 
+	log.Println("Item removed from cart:", gameID)
 	c.JSON(http.StatusOK, gin.H{"message": "Item removed from cart"})
 }
