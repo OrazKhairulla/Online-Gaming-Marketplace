@@ -1,12 +1,15 @@
 package controllers
 
 import (
+	"context"
+	"log"
 	"net/http"
 
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/database"
 	"github.com/OrazKhairulla/Online-Gaming-Marketplace/backend/model"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func GetAllGames(c *gin.Context) {
@@ -46,4 +49,30 @@ func SearchGames(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, games)
+}
+
+// Get game by ID
+func GetGameByID(c *gin.Context) {
+	// Извлечение game_id из параметров URL
+	gameID := c.Param("game_id")
+	objectID, err := primitive.ObjectIDFromHex(gameID)
+	if err != nil {
+		log.Println("Invalid game ID format:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid game ID format"})
+		return
+	}
+
+	collection := database.GetCollection("games")
+	var game model.Game
+
+	// Поиск игры по ID
+	err = collection.FindOne(context.TODO(), bson.M{"_id": objectID}).Decode(&game)
+	if err != nil {
+		log.Println("Game not found or error fetching game:", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Game not found"})
+		return
+	}
+
+	// Возвращаем найденную игру
+	c.JSON(http.StatusOK, game)
 }
