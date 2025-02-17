@@ -5,110 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Log</title>
     <link rel="icon" type="image/x-icon" href="/FrontEnd/public/images/favicon.ico">
-    <link rel="stylesheet" href="/FrontEnd/views/layout.css"> <!----  layout.css ПЕРВЫМ -->
     <link rel="stylesheet" href="/FrontEnd/views/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <button class="header__menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
                 <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
             </svg>
         </button>
-        <nav class = "header__nav">
-            <a href="/FrontEnd/public/index.html" class="header__logo">GAME LOG</a>
-            <ul id="user-nav" class = "header__nav-list">
-                <li id="login-button" class = "header__nav-item"><a href="/FrontEnd/public/login.html" class = "header__nav-link">Login</a></li>
-                <li id="register-button" class = "header__nav-item"><a href="/FrontEnd/public/register.html" class = "header__nav-link">Register</a></li>
+        <nav>
+            <a href="/FrontEnd/public/index.html" class="logo">GAME LOG</a>
+            <ul id="user-nav">
+                <li id="login-button"><a href="/FrontEnd/public/login.html">Login</a></li>
+                <li id="register-button"><a href="/FrontEnd/public/register.html">Register</a></li>
             </ul>
         </nav>
     </header>
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
+<<<<<<< HEAD
         <ul class = "sidebar__list">
             <li class = "sidebar__item"><a href="/FrontEnd/public/index.html" class = "sidebar__link">Home</a></li>
             <li class = "sidebar__item"><a href="/FrontEnd/public/allgames.html" class = "sidebar__link">All Games</a></li>
             <li class = "sidebar__item"><a href="/FrontEnd/public/cart.html" class = "sidebar__link">Cart</a></li>
             <li class = "sidebar__item"><a href="/FrontEnd/public/order.html" class = "sidebar__link">Orders</a></li>
             <li class = "sidebar__item"><a href="/FrontEnd/public/library.html" class = "sidebar__link">Your Account</a></li>
+=======
+        <ul>
+            <li><a href="/FrontEnd/public/index.html">Home</a></li>
+            <li><a href="/FrontEnd/public/allgames.html">All Games</a></li>
+            <li><a href="/FrontEnd/public/cart.html">Cart</a></li>
+            <li><a href="/FrontEnd/public/library.html">Your Account</a></li>
+>>>>>>> 59726b76b587ebe058842bc02b5a762818607a71
         </ul>
     </aside>
 
-    <div class="container">
-      <div class="hero">
-          <h1>Unlock the Ultimate Gaming Experience</h1>
-          <p>Discover, Play, and Dominate in the world of gaming.</p>
-          <button>Learn More</button>
-      </div>
-
-      <section class="latest-games">
-          <h2>Latest Games</h2>
-          <div class="games-grid latest-games__games-grid">
-              <div class="game-card latest-games__game-card">
-                  <img src="/FrontEnd/images/Baldur's Gate 3.avif" alt="Baldur's Gate 3">
-                  <h3>Baldur's Gate 3</h3>
-              </div>
-              <div class="game-card latest-games__game-card">
-                  <img src="/FrontEnd/images/Starfield.jpg" alt="Starfield">
-                  <h3>Starfield</h3>
-              </div>
-              <div class="game-card latest-games__game-card">
-                  <img src="/FrontEnd/images/Lies_of_P_logo.jpeg" alt="Lies of P">
-                  <h3>Lies of P</h3>
-              </div>
-              <div class="game-card latest-games__game-card">
-                  <img src="/FrontEnd/images/AC_mirage.webp" alt="Assassin's Creed Mirage">
-                  <h3>Assassin's Creed Mirage</h3>
-              </div>
-          </div>
-      </section>
-
-      <section class="old-games">
-          <h2>Old Games</h2>
-          <div class="games-grid old-games__games-grid">
-              <div class="game-card old-games__game-card">
-                  <img src="/FrontEnd/images/GTA-VC.jpg" alt="GTA: Vice City">
-                  <h3>GTA: Vice City</h3>
-              </div>
-              <div class="game-card old-games__game-card">
-                  <img src="/FrontEnd/images/Max Payne.jpg" alt="Max Payne">
-                  <h3>Max Payne</h3>
-              </div>
-              <div class="game-card old-games__game-card">
-                  <img src="/FrontEnd/images/diablo2.jpg" alt="Diablo 2">
-                  <h3>Diablo 2</h3>
-              </div>
-              <div class="game-card old-games__game-card">
-                  <img src="/FrontEnd/images/HL2.jpg" alt="Half-Life 2">
-                  <h3>Half-Life 2</h3>
-              </div>
-          </div>
-      </section>
+    <div class="hero">
+        <h1>Unlock the Ultimate Gaming Experience</h1>
+        <p>Discover, Play, and Dominate in the world of gaming.</p>
+        <button>Learn More</button>
     </div>
 
+    <section class="latest-games">
+        <h2>Latest Games</h2>
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="/FrontEnd/images/Baldur's Gate 3.avif" alt="Baldur's Gate 3">
+                <h3>Baldur's Gate 3</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/Starfield.jpg" alt="Starfield">
+                <h3>Starfield</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/Lies_of_P_logo.jpeg" alt="Lies of P">
+                <h3>Lies of P</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/AC_mirage.webp" alt="Assassin's Creed Mirage">
+                <h3>Assassin's Creed Mirage</h3>
+            </div>
+        </div>
+    </section>
+
+    <section class="old-games">
+        <h2>Old Games</h2>
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="/FrontEnd/images/GTA-VC.jpg" alt="GTA: Vice City">
+                <h3>GTA: Vice City</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/Max Payne.jpg" alt="Max Payne">
+                <h3>Max Payne</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/diablo2.jpg" alt="Diablo 2">
+                <h3>Diablo 2</h3>
+            </div>
+            <div class="game-card">
+                <img src="/FrontEnd/images/HL2.jpg" alt="Half-Life 2">
+                <h3>Half-Life 2</h3>
+            </div>
+        </div>
+    </section>
+
     <footer>
-        <div class="footer-menu footer__menu">
-            <div class="footer-column footer__column">
+        <div class="footer-menu">
+            <div class="footer-column">
                 <h3>Products</h3>
                 <ul>
                     <li><a href="#">Graphics</a></li>
                     <li><a href="#">Music</a></li>
                 </ul>
             </div>
-            <div class="footer-column footer__column">
+            <div class="footer-column">
                 <h3>Need Help?</h3>
-                <ul class = "footer__list">
-                    <li class = "footer__item"><a href="#" class = "footer__link">Terms and condition</a></li>
-                    <li class = "footer__item"><a href="#" class = "footer__link">Privacy Policy</a></li>
-                    <li class = "footer__item"><a href="#" class = "footer__link">Refund policy</a></li>
-                    <li class = "footer__item"><a href="#" class = "footer__link">Support</a></li>
+                <ul>
+                    <li><a href="#">Terms and condition</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Refund policy</a></li>
+                    <li><a href="#">Support</a></li>
                 </ul>
             </div>
-            <div class="footer-column footer__column">
+            <div class="footer-column">
                 <h3>Follow us:</h3>
-                <input type="email" placeholder="Enter Email" class = "footer__input">
+                <input type="email" placeholder="Enter Email">
             </div>
         </div>
         <p>© 2025 GAME LOG. All rights reserved.</p>
