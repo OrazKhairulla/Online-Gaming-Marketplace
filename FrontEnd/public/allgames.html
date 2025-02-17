@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game Log - All Games</title>
     <link rel="icon" type="image/x-icon" href="/FrontEnd/public/images/favicon.ico">
-    <link rel="stylesheet" href="/FrontEnd/views/layout.css"> <!---- layout.css ПЕРВЫМ -->
     <link rel="stylesheet" href="/FrontEnd/views/allgames.css">
     <link
         href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap"
@@ -15,20 +14,20 @@
 
 <body>
     <header>
-        <button class="header__menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
             <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-list"
                 viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
                     d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z" />
             </svg>
         </button>
-        <nav class = "header__nav">
-            <a href="/FrontEnd/public/index.html" class="header__logo">GAME LOG</a>
-            <ul class = "header__nav-list">
-                <li class = "header__nav-item">
+        <nav>
+            <a href="/FrontEnd/public/index.html" class="logo">GAME LOG</a>
+            <ul>
+                <li>
                     <div class="search-container">
-                        <input type="text" placeholder="Search" class="search-container__input">
-                        <button type="submit" class="search-container__button" aria-label="Search">
+                        <input type="text" placeholder="Search" class="search-input">
+                        <button type="submit" class="search-button" aria-label="Search">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                 class="bi bi-search" viewBox="0 0 16 16">
                                 <path
@@ -43,11 +42,11 @@
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-        <ul class = "sidebar__list">
-            <li class = "sidebar__item"><a href="/FrontEnd/public/index.html" class = "sidebar__link">Home</a></li>
-            <li class = "sidebar__item"><a href="/FrontEnd/public/allgames.html" class = "sidebar__link">All Games</a></li>
-            <li class = "sidebar__item"><a href="/FrontEnd/public/cart.html" class = "sidebar__link">Cart</a></li>
-            <li class = "sidebar__item"><a href="/FrontEnd/public/library.html" class = "sidebar__link">Your Account</a></li>
+        <ul>
+            <li><a href="/FrontEnd/public/index.html">Home</a></li>
+            <li><a href="/FrontEnd/public/allgames.html">All Games</a></li>
+            <li><a href="/FrontEnd/public/cart.html">Cart</a></li>
+            <li><a href="/FrontEnd/public/library.html">Your Account</a></li>
         </ul>
     </aside>
     <div class="container">
