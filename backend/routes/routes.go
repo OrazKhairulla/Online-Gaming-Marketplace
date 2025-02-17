@@ -32,5 +32,8 @@ func SetupRoutes(r *gin.Engine) {
 		// Order routes
 		protected.POST("/orders", controllers.PlaceOrder)
 		protected.GET("/orders", controllers.GetOrders)
+		protected.POST("/orders/create", controllers.CreateOrder)
+
+		protected.POST("/payment", controllers.ProcessPayment)
 	}
 }
