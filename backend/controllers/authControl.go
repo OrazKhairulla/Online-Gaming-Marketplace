@@ -15,7 +15,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Регистрация пользователя
 func Register(c *gin.Context) {
 	var input struct {
 		Username string `json:"username" binding:"required"`
@@ -32,6 +31,7 @@ func Register(c *gin.Context) {
 	// Check if user already exists
 	collection := database.GetCollection("users")
 	var existingUser model.User
+
 	// Check if the user already exists by email or username
 	err := collection.FindOne(context.TODO(), bson.M{"$or": []bson.M{
 		{"email": input.Email},
@@ -52,10 +52,11 @@ func Register(c *gin.Context) {
 
 	// Create a new user
 	newUser := model.User{
+		ID:         primitive.NewObjectID(),
 		Username:   input.Username,
 		Email:      input.Email,
 		Password:   string(hashedPassword),
-		OwnedGames: []primitive.ObjectID{},
+		OwnedGames: []model.OwnedGame{},
 		CreatedAt:  time.Now(),
 	}
 
@@ -69,43 +70,45 @@ func Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
 }
 
-// Логин пользователя
 func Login(c *gin.Context) {
 	var input struct {
 		Username string `json:"username" binding:"required"`
 		Password string `json:"password" binding:"required"`
 	}
 
-	// Проверка на корректность входных данных
+	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Поиск пользователя по username
+	// search for the user in the database
 	collection := database.GetCollection("users")
 	var user model.User
+
+	log.Println("Searching for user:", input.Username)
+
 	err := collection.FindOne(context.TODO(), bson.M{"username": input.Username}).Decode(&user)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверное имя пользователя или пароль"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверное имя пользователя"})
 		return
 	}
 
-	// Проверка пароля
+	// password check
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password))
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверное имя пользователя или пароль"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Неверный пароль"})
 		return
 	}
 
-	// Генерация JWT токена
+	// generate jwt token
 	token, err := jwtServices.GenerateToken(user.ID.Hex(), user.Username)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
 		return
 	}
 
-	// Возвращаем успешный ответ с токеном и сообщением + email
+	// send response
 	c.JSON(http.StatusOK, gin.H{
 		"message":  "Login successful",
 		"token":    token,
@@ -114,9 +117,8 @@ func Login(c *gin.Context) {
 	})
 }
 
-// UpdateUser обновляет имя пользователя и email
 func UpdateUser(c *gin.Context) {
-	userID := c.GetString("userID") // Получаем ID пользователя из middleware
+	userID := c.GetString("userID")
 	if userID == "" {
 		log.Println("userID not found in context")
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -140,7 +142,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Проверяем, не занят ли email другим пользователем
 	collection := database.GetCollection("users")
 	var existingUser model.User
 	err = collection.FindOne(context.TODO(), bson.M{"email": input.Email, "_id": bson.M{"$ne": userObjectID}}).Decode(&existingUser)
@@ -149,7 +150,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// Обновляем пользователя в MongoDB
 	update := bson.M{"$set": bson.M{"username": input.Username, "email": input.Email}}
 	result, err := collection.UpdateOne(context.TODO(), bson.M{"_id": userObjectID}, update)
 	if err != nil {
@@ -165,4 +165,76 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "User updated successfully"})
+}
+
+func GetUserLibrary(c *gin.Context) {
+	userID := c.GetString("userID")
+	log.Println("Extracted userID from middleware:", userID)
+
+	if userID == "" {
+		log.Println("Unauthorized access: userID is empty")
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+
+	var user model.User
+	userCollection := database.GetCollection("users")
+
+	userObjectID, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		log.Println("Invalid user ID format:", userID, "Error:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Invalid user ID"})
+		return
+	}
+
+	log.Println("Extracted userObjectID:", userObjectID.Hex())
+
+	err = userCollection.FindOne(c, bson.M{"_id": userObjectID}).Decode(&user)
+	if err != nil {
+		log.Println("User not found with ID:", userObjectID.Hex(), "Error:", err)
+		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
+		return
+	}
+
+	log.Println("User found:", user.Username, "OwnedGames count:", len(user.OwnedGames))
+
+	if len(user.OwnedGames) == 0 {
+		log.Println("User has no owned games:", userObjectID.Hex())
+		c.JSON(http.StatusOK, gin.H{"message": "No games in library", "games": []model.Game{}})
+		return
+	}
+
+	var gameIDs []primitive.ObjectID
+	for _, item := range user.OwnedGames {
+		gameIDs = append(gameIDs, item.GameID)
+	}
+
+	log.Println("Converted gameIDs:", gameIDs)
+
+	gameCollection := database.GetCollection("games")
+	var games []model.Game
+
+	filter := bson.M{"_id": bson.M{"$in": gameIDs}}
+	cursor, err := gameCollection.Find(c, filter)
+	if err != nil {
+		log.Println("Error retrieving games for user:", userObjectID.Hex(), "Filter:", filter, "Error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error retrieving games"})
+		return
+	}
+	defer cursor.Close(c)
+
+	if err = cursor.All(c, &games); err != nil {
+		log.Println("Error decoding games for user:", userObjectID.Hex(), "Error:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Error decoding games"})
+		return
+	}
+
+	if len(games) == 0 {
+		log.Println("No games found in database for user:", userObjectID.Hex())
+		c.JSON(http.StatusOK, gin.H{"message": "No games found", "games": []model.Game{}})
+		return
+	}
+
+	log.Println("Library retrieved successfully for user:", userObjectID.Hex(), "Total games:", len(games))
+	c.JSON(http.StatusOK, games)
 }
