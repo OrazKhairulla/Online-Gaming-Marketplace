@@ -49,7 +49,12 @@
             <div class="cart-total">
                 <p>Total: $0.00</p>
             </div>
-            <button class="cart__buy-all-btn">Buy All</button>
+            <button class="cart__buy-all-btn" onclick="redirectToOrderPage()">Buy All</button>
+            <script>
+                function redirectToOrderPage() {
+                    window.location.href = "/FrontEnd/public/order.html";
+                }
+            </script>
         </div>
     </div>
 

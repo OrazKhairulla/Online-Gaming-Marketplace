@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Log - Order</title>
+    <link rel="stylesheet" href="/FrontEnd/views/layout.css">
+    <link rel="stylesheet" href="/FrontEnd/views/order.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+    <header>
+        <nav class="header__nav">
+            <a href="/FrontEnd/public/index.html" class="header__logo">GAME LOG</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Review Your Order</h1>
+        <div id="order-items" class="order-items">
+            <!-- Order items will be dynamically loaded here -->
+        </div>
+        <div class="order-total">
+            <p>Total: $<span id="order-total">0.00</span></p>
+        </div>
+        <button class="order__proceed-btn" onclick="redirectToPaymentPage()">Proceed to Payment</button>
+    </div>
+
+    <footer>
+        <p>© 2025 GAME LOG. All rights reserved.</p>
+    </footer>
+    <script src="/FrontEnd/scripts/order.js"></script>
+</body>
+</html>
