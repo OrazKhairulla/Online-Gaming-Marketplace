@@ -1,3 +1,5 @@
+/* library.css */
+
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -88,15 +90,21 @@ header .menu-toggle svg {
 header .menu-toggle:hover svg {
     fill: #ff6f61;
 }
+
+/* ИЗМЕНЕНО: header сделан sticky */
 header {
     background: linear-gradient(135deg, #1a1a1a, #333);
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
+    /* position: relative;  <- Удалено */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky; /* Добавлено */
+    top: 0; /* Добавлено */
+    z-index: 100; /* Добавлено */
 }
+
 nav {
     display: flex;
     align-items: center;

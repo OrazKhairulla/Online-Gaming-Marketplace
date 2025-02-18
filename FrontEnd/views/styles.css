@@ -1,3 +1,5 @@
+/* styles.css */
+
 /* Global styles */
 body {
     font-family: 'Roboto', sans-serif;
@@ -7,14 +9,18 @@ body {
     color: #fff;
 }
 
+/* ИЗМЕНЕНО: Сделан header липким */
 header {
     background: linear-gradient(135deg, #1a1a1a, #333);
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
+    /* position: relative;  <-  Это больше не нужно */
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky; /*  Вот и всё! */
+    top: 0; /*  Прилипает к верху экрана */
+    z-index: 100; /*  Чтобы header был поверх другого контента */
 }
 
 
