@@ -1,5 +1,3 @@
-/* library.css */
-
 body {
     font-family: 'Roboto', sans-serif;
     margin: 0;
@@ -27,37 +25,37 @@ h1 {
 
 .library-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Увеличиваем minmax */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
-    padding: 20px; /* Добавляем внутренние отступы */
+    padding: 20px;
 }
 
 .game-card {
     background-color: #333;
-    border-radius: 15px; /* Более выраженные углы */
+    border-radius: 15px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* Мягкая тень */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .game-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Более выраженная тень при наведении */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 .game-card img {
     width: 100%;
-    height: 220px; /* Увеличиваем высоту изображения */
+    height: 220px;
     object-fit: cover;
-    transition: transform 0.3s ease; /* Плавное изменение масштаба */
+    transition: transform 0.3s ease;
 }
 
 .game-card:hover img {
-    transform: scale(1.1); /* Небольшое увеличение при наведении */
+    transform: scale(1.1);
 }
 
 .game-card-content {
-    padding: 25px; /* Увеличиваем отступы */
+    padding: 25px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -65,13 +63,12 @@ h1 {
 }
 
 .game-card-title {
-    font-size: 1.7em; /* Увеличиваем размер шрифта */
-    margin-bottom: 15px; /* Увеличиваем отступ */
+    font-size: 1.7em;
+    margin-bottom: 15px;
     color: #eee;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
 }
 
-/* Styles for the menu toggle button */
 header .menu-toggle {
     background: none;
     border: none;
@@ -91,18 +88,16 @@ header .menu-toggle:hover svg {
     fill: #ff6f61;
 }
 
-/* ИЗМЕНЕНО: header сделан sticky */
 header {
     background: linear-gradient(135deg, #1a1a1a, #333);
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* position: relative;  <- Удалено */
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky; /* Добавлено */
-    top: 0; /* Добавлено */
-    z-index: 100; /* Добавлено */
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 nav {
@@ -187,7 +182,6 @@ footer {
     text-align: left;
 }
 
-/* Стили для input */
 #account-info input[type="text"],
 #account-info input[type="email"] {
     background-color: #444;
@@ -197,15 +191,14 @@ footer {
     padding: 8px;
     font-size: 1.1em;
     margin-left: 5px;
-    width: auto; /* Автоматическая ширина */
-    display: inline; /* Важно для правильного отображения */
+    width: auto;
+    display: inline;
 }
 
-/* Убираем рамку при фокусе */
 #account-info input[type="text"]:focus,
 #account-info input[type="email"]:focus {
     outline: none;
-    border: 1px solid #ff6f61; /* Добавляем рамку при фокусе */
+    border: 1px solid #ff6f61;
 }
 
 #account-info button {
@@ -217,7 +210,7 @@ footer {
     cursor: pointer;
     font-size: 1.1em;
     transition: background-color 0.3s ease;
-    margin-top: 10px; /* Добавляем отступ сверху для кнопок */
+    margin-top: 10px;
 }
 
 #account-info button:hover {

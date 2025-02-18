@@ -51,9 +51,8 @@ func SearchGames(c *gin.Context) {
 	c.JSON(http.StatusOK, games)
 }
 
-// Get game by ID
 func GetGameByID(c *gin.Context) {
-	// Извлечение game_id из параметров URL
+	// retrieve game ID from URL
 	gameID := c.Param("game_id")
 	objectID, err := primitive.ObjectIDFromHex(gameID)
 	if err != nil {
@@ -65,7 +64,7 @@ func GetGameByID(c *gin.Context) {
 	collection := database.GetCollection("games")
 	var game model.Game
 
-	// Поиск игры по ID
+	// find game by ID
 	err = collection.FindOne(context.TODO(), bson.M{"_id": objectID}).Decode(&game)
 	if err != nil {
 		log.Println("Game not found or error fetching game:", err)
@@ -73,6 +72,6 @@ func GetGameByID(c *gin.Context) {
 		return
 	}
 
-	// Возвращаем найденную игру
+	// return game details
 	c.JSON(http.StatusOK, game)
 }

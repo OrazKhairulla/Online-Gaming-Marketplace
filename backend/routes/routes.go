@@ -21,7 +21,7 @@ func SetupRoutes(r *gin.Engine) {
 		})
 
 		// User routes
-		protected.POST("/user/update", controllers.UpdateUser) // Добавлен маршрут для обновления пользователя
+		protected.POST("/user/update", controllers.UpdateUser)
 		protected.GET("/user/library", controllers.GetUserLibrary)
 
 		// Cart routes
@@ -32,6 +32,6 @@ func SetupRoutes(r *gin.Engine) {
 		// Order routes
 		protected.POST("/orders", controllers.PlaceOrder)
 		protected.GET("/orders", controllers.GetOrder)
-		protected.POST("/orders/complete/:order_id", controllers.CompleteOrder) // Новый маршрут
+		protected.POST("/orders/complete/:order_id", controllers.CompleteOrder)
 	}
 }

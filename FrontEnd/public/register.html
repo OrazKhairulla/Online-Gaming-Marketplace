@@ -7,7 +7,7 @@
     <title>Game Log - Register</title>
     <link rel="icon" type="image/x-icon" href="/FrontEnd/public/images/favicon.ico">
     <link rel="stylesheet" href="/FrontEnd/views/auth.css">
-     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -42,7 +42,7 @@
     </div>
     <script>
         document.getElementById('registerForm').addEventListener('submit', async function (event) {
-            event.preventDefault(); // Отключаем стандартное поведение формы
+            event.preventDefault();
 
             const username = document.getElementById('username').value;
             const email = document.getElementById('email').value;
@@ -50,7 +50,7 @@
             const confirmPassword = document.getElementById('confirmPassword').value;
             const registrationMessage = document.getElementById('registrationMessage');
 
-            // Проверка совпадения паролей
+            // check if passwords match
             if (password !== confirmPassword) {
                 registrationMessage.textContent = 'Passwords do not match!';
                 registrationMessage.style.color = 'red';
@@ -71,10 +71,10 @@
                     registrationMessage.style.color = 'green';
                     document.getElementById('registerForm').reset();
 
-                    // Перенос на страницу логина
+                    // Redirect to login page after 2 seconds
                     setTimeout(() => {
                         window.location.href = "/FrontEnd/public/login.html";
-                    }, 2000); // Ждем 2 секунды перед переходом
+                    }, 2000);
 
                 } else {
                     const data = await response.json();

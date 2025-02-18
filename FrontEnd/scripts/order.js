@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const orderTotal = document.getElementById('order-total');
 
     try {
-        console.log("Fetching orders..."); // Лог для отладки
+        console.log("Fetching orders...");
         const response = await fetch('/api/orders', {
             method: 'GET',
             headers: {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         const data = await response.json();
-        console.log("Orders received:", data); // Лог полученных данных
+        console.log("Orders received:", data);
 
         if (!data.orders || data.orders.length === 0) {
             orderContainer.innerHTML = '<p>No pending orders found.</p>';
@@ -25,13 +25,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             return;
         }
 
-        orderContainer.innerHTML = ''; // Очищаем контейнер
+        orderContainer.innerHTML = '';
         let totalAmount = 0;
-        let hasPendingOrders = false; // Флаг наличия заказов со статусом "pending"
+        let hasPendingOrders = false;
 
         data.orders.forEach(order => {
             if (order.status === 'pending') {
-                hasPendingOrders = true; // Найден хотя бы один заказ со статусом "pending"
+                hasPendingOrders = true;
 
                 order.games.forEach(game => {
                     const orderItem = document.createElement('div');
@@ -46,13 +46,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                     totalAmount += game.price;
                 });
 
-                // Добавление кнопки завершения заказа
+                // add complete order button
                 const completeButton = document.createElement('button');
                 completeButton.textContent = 'Complete Order';
                 completeButton.classList.add('order-complete-btn');
                 completeButton.addEventListener('click', async function () {
                     if (order._id) {
-                        await completeOrder(order._id); // Завершение заказа
+                        await completeOrder(order._id);
                     } else {
                         console.error("Order ID is undefined");
                         alert("Failed to complete order: Order ID is undefined.");
@@ -74,7 +74,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 });
 
-// Функция завершения заказа
 async function completeOrder(orderID) {
     try {
         const response = await fetch(`/api/orders/complete/${orderID}`, {
@@ -91,7 +90,7 @@ async function completeOrder(orderID) {
 
         const data = await response.json();
         alert("Order completed successfully!");
-        location.reload(); // Перезагружаем страницу после завершения заказа
+        location.reload();
     } catch (error) {
         console.error('Error completing order:', error);
         alert(`Failed to complete order: ${error.message}`);

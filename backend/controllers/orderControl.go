@@ -14,7 +14,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// PlaceOrder создаёт новый заказ на основе корзины пользователя
 func PlaceOrder(c *gin.Context) {
 	userID, exists := c.Get("userID")
 	if !exists {
@@ -67,7 +66,7 @@ func PlaceOrder(c *gin.Context) {
 		}
 
 		totalPrice += game.Price
-		orderItems[i] = model.OrderItem(cartItem) // Теперь используем корректное преобразование
+		orderItems[i] = model.OrderItem(cartItem)
 	}
 
 	order := model.Order{
@@ -124,7 +123,7 @@ func GetOrder(c *gin.Context) {
 	orderCollection := database.GetCollection("orders")
 	gameCollection := database.GetCollection("games")
 
-	// Поиск заказов пользователя
+	// search for orders by user_id
 	cursor, err := orderCollection.Find(context.TODO(), bson.M{"user_id": userObjectID})
 	if err != nil {
 		log.Println("Error finding orders:", err)
@@ -133,7 +132,7 @@ func GetOrder(c *gin.Context) {
 	}
 	defer cursor.Close(context.TODO())
 
-	// Перебираем заказы
+	// iterate over orders and fetch game details
 	var responseOrders []gin.H
 	for cursor.Next(context.TODO()) {
 		var order model.Order
@@ -142,7 +141,7 @@ func GetOrder(c *gin.Context) {
 			continue
 		}
 
-		// Получаем детальную информацию об играх
+		// fetch game details for each item in order
 		var detailedItems []gin.H
 		for _, item := range order.Items {
 			var game model.Game
@@ -157,13 +156,13 @@ func GetOrder(c *gin.Context) {
 			}
 
 			detailedItems = append(detailedItems, gin.H{
-				"id":    game.ID, // Преобразуем ObjectID в строку
+				"id":    game.ID,
 				"title": game.Title,
 				"price": game.Price,
 			})
 		}
 
-		// Формируем структуру заказа для ответа
+		// append order details to response
 		responseOrders = append(responseOrders, gin.H{
 			"_id":    order.ID.Hex(),
 			"total":  order.Total,
@@ -172,21 +171,20 @@ func GetOrder(c *gin.Context) {
 		})
 	}
 
-	// Если заказов нет, возвращаем пустой массив
+	// check if no orders found
 	if len(responseOrders) == 0 {
 		log.Println("No orders found for user:", userIDStr)
 		c.JSON(http.StatusOK, gin.H{"orders": []gin.H{}})
 		return
 	}
 
-	// Отправляем клиенту список заказов и игр
+	// send response
 	log.Println("Sending response orders:", responseOrders)
 	c.JSON(http.StatusOK, gin.H{"orders": responseOrders})
 }
 
-// CompleteOrder - функция для переноса игр из заказа в список купленных игр
 func CompleteOrder(c *gin.Context) {
-	// Получение ID заказа из параметров URL
+	// get order ID from URL
 	orderID := c.Param("order_id")
 	orderObjectID, err := primitive.ObjectIDFromHex(orderID)
 	if err != nil {
@@ -195,7 +193,7 @@ func CompleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Получение ID пользователя из контекста
+	// get user ID from context
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -214,7 +212,7 @@ func CompleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Получение заказа из базы данных
+	// get order details
 	orderCollection := database.GetCollection("orders")
 	var order model.Order
 	err = orderCollection.FindOne(context.TODO(), bson.M{"_id": orderObjectID, "user_id": userObjectID}).Decode(&order)
@@ -224,22 +222,19 @@ func CompleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Проверка, есть ли игры в заказе
+	// check if order is empty
 	if len(order.Items) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Order is empty"})
 		return
 	}
 
-	// Получение коллекции пользователей
 	userCollection := database.GetCollection("users")
-
-	// Формирование списка игр для добавления в OwnedGames
 	ownedGames := make([]model.OwnedGame, len(order.Items))
 	for i, item := range order.Items {
 		ownedGames[i] = model.OwnedGame(item)
 	}
 
-	// Добавление игр в поле owned_games пользователя
+	// add games to user's owned list
 	_, err = userCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": userObjectID},
@@ -251,7 +246,7 @@ func CompleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Обновление статуса заказа на "completed"
+	// update order status to "completed"
 	_, err = orderCollection.UpdateOne(
 		context.TODO(),
 		bson.M{"_id": orderObjectID},
@@ -263,6 +258,6 @@ func CompleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Успешное завершение
+	// send response
 	c.JSON(http.StatusOK, gin.H{"message": "Order completed successfully"})
 }
