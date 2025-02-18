@@ -1,3 +1,5 @@
+/* allgames.css */
+
 /* Global styles */
 body {
     font-family: 'Roboto', sans-serif;
@@ -16,19 +18,22 @@ body {
 
 .games-grid {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /*  Одна колонка по умолчанию */
     gap: 50px;
     margin-top: 40px;
 }
 
+/* ИЗМЕНЕНО: Исправлена структура карточки игры */
 .game-card {
     display: flex;
     flex-direction: row;
     transition: transform 0.3s, box-shadow 0.3s;
-    height: 262px;
+    height: auto;  /*  Убрана фиксированная высота */
     width: 100%;
-    position: relative;
-    align-items: center;
+    /* position: relative;  <-  Убрано абсолютное позиционирование */
+    align-items: stretch; /*  Растягиваем элементы по высоте */
+    background-color: #333; /*  Фон для всей карточки */
+    border-radius: 10px; /*  Закругление для всей карточки */
 }
 
 .game-card:hover {
@@ -38,32 +43,41 @@ body {
 .game-card img {
     width: auto;
     max-width: 40%;
-    height: 100%;
+    height: auto; /*  Автоматическая высота */
     object-fit: cover;
-    border-radius: 10px 0 0 10px;
+    border-radius: 10px 0 0 10px; /*  Закругление только слева */
     margin-bottom: 0;
+     /* Убираем flex-shrink, чтобы изображение не сжималось */
+    flex-shrink: 0;
 }
 
 .game-info {
     width: 60%;
-    height: 100%;
-    background-color: #333;
-    border-radius: 0 10px 10px 0;
+    /* height: 100%;  <-  Убрана фиксированная высота */
+    /* background-color: #333;  <-  Фон теперь у всей карточки */
+    border-radius: 0 10px 10px 0; /*  Закругление только справа */
     padding: 20px;
     box-sizing: border-box;
-    position: relative;
+    /* position: relative;  <-  Убрано абсолютное позиционирование */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: space-between; /*  Распределяем пространство */
 }
 
 .game-card h3 {
-    margin: 0;
+    margin: 0 0 10px 0; /* Добавлен нижний отступ */
     font-size: 1.3em;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-    left: 20px;
-    padding: 5px 10px;
-    border-radius: 5px;
+    /* left: 20px;  <-  Убрано позиционирование */
+    /* padding: 5px 10px;  <-  Убраны лишние отступы */
+    /* border-radius: 5px;  <-  Убраны закругления */
+}
+
+/* ДОБАВЛЕНО: Стили для описания, жанра и разработчика */
+.game-info p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #ccc;
 }
 
 /* Styles for the menu toggle button */
@@ -85,14 +99,17 @@ header .menu-toggle svg {
 header .menu-toggle:hover svg {
     fill: #ff6f61;
 }
+
 header {
     background: linear-gradient(135deg, #1a1a1a, #333);
     padding: 20px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 nav {
     display: flex;
@@ -203,6 +220,7 @@ footer {
     fill: #fff;
 }
 
+/* ИЗМЕНЕНО: Стили для кнопки */
 .add-to-cart-btn {
     background-color: #ff6f61;
     color: #fff;
@@ -212,7 +230,8 @@ footer {
     cursor: pointer;
     font-size: 0.9em;
     transition: background-color 0.3s;
-    align-self: flex-start; /* Выравниваем кнопку вверху контейнера */
+    margin-top: auto; /*  Прижимаем кнопку к низу */
+     /* align-self: flex-start;  <-  Убрано выравнивание */
 }
 
 .add-to-cart-btn:hover {
@@ -228,5 +247,6 @@ footer {
     font-size: 0.9em;
     transition: background-color 0.3s;
     margin-left: 5px; /* Add some spacing between the buttons */
-    align-self: flex-start; /* Выравниваем кнопку вверху контейнера */
+    /* align-self: flex-start;  <-  Убрано выравнивание */
+    margin-top: auto; /* Прижимаем кнопку к низу, если есть */
 }

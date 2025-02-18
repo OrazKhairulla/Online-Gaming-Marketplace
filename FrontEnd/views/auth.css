@@ -1,3 +1,5 @@
+/*auth.css*/
+
 /*Form Styles*/
 body {
     font-family: 'Roboto', sans-serif;
@@ -89,18 +91,35 @@ body {
     object-fit: cover;
 }
 
+/* ИЗМЕНЕНО: Добавлен sticky header */
 .container {
     position: relative;
     z-index: 1;
 }
+header {
+    background: linear-gradient(135deg, #1a1a1a, #333);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky; /* Добавлено */
+    top: 0; /* Добавлено */
+    z-index: 100; /* Добавлено */
+}
+/* ИЗМЕНЕНО: изменена структура навбара */
+nav {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
 
-.logo {
+nav .logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 40px;
+    font-size: 24px;
     font-weight: 700;
-    color: #d52d1e;
+    color: #ff6f61;
+    margin-left: 0;
     text-decoration: none;
-    display: block;
-    text-align: center;
-    margin-bottom: 20px;
+    
 }
