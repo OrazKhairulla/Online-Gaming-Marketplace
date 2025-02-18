@@ -32,5 +32,6 @@ func SetupRoutes(r *gin.Engine) {
 		// Order routes
 		protected.POST("/orders", controllers.PlaceOrder)
 		protected.GET("/orders", controllers.GetOrder)
+		protected.POST("/orders/complete/:order_id", controllers.CompleteOrder) // Новый маршрут
 	}
 }

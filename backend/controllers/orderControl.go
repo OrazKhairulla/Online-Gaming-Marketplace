@@ -165,7 +165,7 @@ func GetOrder(c *gin.Context) {
 
 		// Формируем структуру заказа для ответа
 		responseOrders = append(responseOrders, gin.H{
-			"id":     order.ID.Hex(),
+			"_id":    order.ID.Hex(),
 			"total":  order.Total,
 			"status": order.Status,
 			"games":  detailedItems,
@@ -182,4 +182,87 @@ func GetOrder(c *gin.Context) {
 	// Отправляем клиенту список заказов и игр
 	log.Println("Sending response orders:", responseOrders)
 	c.JSON(http.StatusOK, gin.H{"orders": responseOrders})
+}
+
+// CompleteOrder - функция для переноса игр из заказа в список купленных игр
+func CompleteOrder(c *gin.Context) {
+	// Получение ID заказа из параметров URL
+	orderID := c.Param("order_id")
+	orderObjectID, err := primitive.ObjectIDFromHex(orderID)
+	if err != nil {
+		log.Println("Invalid order ID format:", err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid order ID format"})
+		return
+	}
+
+	// Получение ID пользователя из контекста
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userIDStr, ok := userID.(string)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	// Получение заказа из базы данных
+	orderCollection := database.GetCollection("orders")
+	var order model.Order
+	err = orderCollection.FindOne(context.TODO(), bson.M{"_id": orderObjectID, "user_id": userObjectID}).Decode(&order)
+	if err != nil {
+		log.Println("Error fetching user order:", err)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		return
+	}
+
+	// Проверка, есть ли игры в заказе
+	if len(order.Items) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Order is empty"})
+		return
+	}
+
+	// Получение коллекции пользователей
+	userCollection := database.GetCollection("users")
+
+	// Формирование списка игр для добавления в OwnedGames
+	ownedGames := make([]model.OwnedGame, len(order.Items))
+	for i, item := range order.Items {
+		ownedGames[i] = model.OwnedGame(item)
+	}
+
+	// Добавление игр в поле owned_games пользователя
+	_, err = userCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": userObjectID},
+		bson.M{"$addToSet": bson.M{"owned_games": bson.M{"$each": ownedGames}}},
+	)
+	if err != nil {
+		log.Println("Error updating user's owned games:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add games to owned list"})
+		return
+	}
+
+	// Обновление статуса заказа на "completed"
+	_, err = orderCollection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": orderObjectID},
+		bson.M{"$set": bson.M{"status": "completed", "updated_at": time.Now()}},
+	)
+	if err != nil {
+		log.Println("Error updating order status:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update order status"})
+		return
+	}
+
+	// Успешное завершение
+	c.JSON(http.StatusOK, gin.H{"message": "Order completed successfully"})
 }

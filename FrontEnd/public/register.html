@@ -70,6 +70,12 @@
                     registrationMessage.textContent = 'Registration successful!';
                     registrationMessage.style.color = 'green';
                     document.getElementById('registerForm').reset();
+
+                    // Перенос на страницу логина
+                    setTimeout(() => {
+                        window.location.href = "/FrontEnd/public/login.html";
+                    }, 2000); // Ждем 2 секунды перед переходом
+
                 } else {
                     const data = await response.json();
                     registrationMessage.textContent = data.message || 'Registration failed!';
