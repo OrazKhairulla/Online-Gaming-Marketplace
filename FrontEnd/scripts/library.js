@@ -41,9 +41,12 @@ function displayGames(games) {
         gameCard.classList.add('game-card');
 
         gameCard.innerHTML = `
-            <img src="${game.imageUrl}" alt="${game.title}" class="game-image">
-            <h3>${game.title}</h3>
-            <p>${game.description}</p>
+            <img src="${game.image_url}" alt="${game.title}" class="game-image">
+            <div class="game-card-content">
+                <h3 class="game-card-title">${game.title}</h3>
+                <p>${game.description}</p>
+            </div>
+
         `;
 
         libraryList.appendChild(gameCard);
