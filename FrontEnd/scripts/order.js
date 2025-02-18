@@ -89,8 +89,7 @@ async function completeOrder(orderID) {
         }
 
         const data = await response.json();
-        alert("Order completed successfully!");
-        location.reload();
+        window.location.replace("/FrontEnd/public/library.html");
     } catch (error) {
         console.error('Error completing order:', error);
         alert(`Failed to complete order: ${error.message}`);

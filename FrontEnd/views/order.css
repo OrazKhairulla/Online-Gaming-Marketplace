@@ -136,8 +136,7 @@ h1 {
     box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
 }
 
-.payment__pay-btn {
-    display: block;
+.order-complete-btn {
     width: 100%;
     padding: 1rem;
     background-color: #ff6f61;
@@ -150,7 +149,7 @@ h1 {
     font-weight: bold;
 }
 
-.payment__pay-btn:hover {
+.order-complete-btn:hover {
     background-color: #e65a50;
     transform: scale(1.05);
 }

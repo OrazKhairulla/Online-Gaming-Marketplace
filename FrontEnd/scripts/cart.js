@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = '/FrontEnd/public/order.html';
         } catch (error) {
             console.error('Error placing order:', error);
-            alert('Failed to place order. Please try again later.');
         }
     });
 });

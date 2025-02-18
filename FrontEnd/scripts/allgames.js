@@ -58,9 +58,15 @@ document.addEventListener("DOMContentLoaded", async function () {
                             game_id: gameId,
                         }),
                     });
-                    if (!response.ok){
+                    if (!response.ok) {
                         throw new Error("Failed to add to cart");
                     }
+
+                    // Change button style on success
+                    this.textContent = "Added";
+                    this.style.backgroundColor = "gray";
+                    this.style.cursor = "not-allowed";
+                    this.disabled = true;
                 } catch (error) {
                     console.error("Error:", error);
                     alert("An error occurred while adding to cart");

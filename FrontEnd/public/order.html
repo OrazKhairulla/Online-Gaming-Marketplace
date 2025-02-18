@@ -25,25 +25,7 @@
         <div class="order-total">
             <p>Total: $<span id="order-total">0.00</span></p>
         </div>
-        <button class="order__proceed-btn" onclick="showPaymentForm()">Proceed to Payment</button>
-    
-        <div class="container" id="payment-container" style="display: none;">
-            <h1>Payment</h1>
-            <form id="payment-form">
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <button type="submit" class="payment__pay-btn">Pay</button>
-            </form>
-        </div>
     </div>
-    
-    <script>
-        function showPaymentForm() {
-            document.getElementById("payment-container").style.display = "block";
-        }
-    </script>
 
     <footer>
         <p>© 2025 GAME LOG. All rights reserved.</p>
