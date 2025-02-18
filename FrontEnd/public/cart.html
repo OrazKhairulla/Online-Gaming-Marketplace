@@ -51,7 +51,9 @@
             <button id="" class="buy-all-button" onclick="redirectToOrderPage()">Buy All</button>
             <script>
                 function redirectToOrderPage() {
-                    window.location.href = "/FrontEnd/public/order.html";
+                    setTimeout(function () {
+                        window.location.href = "/FrontEnd/public/order.html";
+                    }, 2000);
                 }
             </script>
         </div>

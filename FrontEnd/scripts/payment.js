@@ -1,3 +1,4 @@
+// Updated payment.js
 document.getElementById('payment-form').addEventListener('submit', async function (event) {
     event.preventDefault();
 
@@ -14,11 +15,12 @@ document.getElementById('payment-form').addEventListener('submit', async functio
         });
 
         if (!response.ok) {
-            throw new Error('Payment failed');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Payment failed');
         }
 
         alert('Payment processed successfully. Check your email for the receipt.');
-        window.location.href = "/FrontEnd/public/index.html";
+        window.location.href = "/FrontEnd/public/library.html";
     } catch (error) {
         console.error('Error processing payment:', error);
         alert('An error occurred while processing your payment. Please try again.');

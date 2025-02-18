@@ -1,3 +1,4 @@
+// Updated order.js
 document.addEventListener('DOMContentLoaded', async function () {
     const orderItemsContainer = document.getElementById('order-items');
     const orderTotalElement = document.getElementById('order-total');
@@ -32,6 +33,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         orderTotalElement.textContent = orderTotal.toFixed(2);
     } catch (error) {
         console.error('Error loading order items:', error);
+        alert('Failed to load order items. Please try again later.');
     }
 });
 
