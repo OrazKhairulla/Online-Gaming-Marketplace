@@ -58,9 +58,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             game_id: gameId,
                         }),
                     });
-                    if (response.ok) {
-                        alert("Game added to cart!");
-                    } else {
+                    if (!response.ok){
                         throw new Error("Failed to add to cart");
                     }
                 } catch (error) {

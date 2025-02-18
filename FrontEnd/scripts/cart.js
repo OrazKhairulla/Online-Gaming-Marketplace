@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (!orderResponse.ok) throw new Error('Failed to create order');
 
-            alert('Order placed successfully!');
             cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
             document.querySelector('.cart-total p').textContent = 'Total: $0.00';
 
