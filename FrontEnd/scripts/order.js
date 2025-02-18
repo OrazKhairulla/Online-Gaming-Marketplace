@@ -1,10 +1,10 @@
-// Updated order.js
 document.addEventListener('DOMContentLoaded', async function () {
-    const orderItemsContainer = document.getElementById('order-items');
-    const orderTotalElement = document.getElementById('order-total');
+    const orderContainer = document.getElementById('order-items');
+    const orderTotal = document.getElementById('order-total');
 
     try {
-        const response = await fetch('/api/cart', {
+        console.log("Fetching orders..."); // Лог для отладки
+        const response = await fetch('/api/orders', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -13,30 +13,39 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to fetch cart items');
+            throw new Error(`Failed to fetch orders. Status: ${response.status}`);
         }
 
-        const cartData = await response.json();
-        let orderTotal = 0;
+        const data = await response.json();
+        console.log("Orders received:", data); // Лог полученных данных
 
-        cartData.items.forEach(item => {
-            const orderItemDiv = document.createElement('div');
-            orderItemDiv.classList.add('order-item');
-            orderItemDiv.innerHTML = `
-                <p>${item.title}</p>
-                <p>$${item.price.toFixed(2)}</p>
-            `;
-            orderItemsContainer.appendChild(orderItemDiv);
-            orderTotal += item.price;
+        if (!data.orders || data.orders.length === 0) {
+            orderContainer.innerHTML = '<p>No orders found.</p>';
+            orderTotal.textContent = '0.00';
+            return;
+        }
+
+        orderContainer.innerHTML = ''; // Очищаем контейнер
+        let totalAmount = 0;
+
+        data.orders.forEach(order => {
+            order.games.forEach(game => {
+                const orderItem = document.createElement('div');
+                orderItem.classList.add('order-item');
+                orderItem.innerHTML = `
+                    <div class="order-item-details">
+                        <h3>${game.title}</h3>
+                        <p>Price: $${game.price.toFixed(2)}</p>
+                    </div>
+                `;
+                orderContainer.appendChild(orderItem);
+                totalAmount += game.price;
+            });
         });
 
-        orderTotalElement.textContent = orderTotal.toFixed(2);
+        orderTotal.textContent = totalAmount.toFixed(2);
     } catch (error) {
-        console.error('Error loading order items:', error);
-        alert('Failed to load order items. Please try again later.');
+        console.error('Error loading orders:', error);
+        orderContainer.innerHTML = `<p>Failed to load orders. Error: ${error.message}</p>`;
     }
 });
-
-function redirectToPaymentPage() {
-    window.location.href = "/FrontEnd/public/payment.html";
-}

@@ -98,3 +98,88 @@ func PlaceOrder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order placed successfully", "orderID": order.ID.Hex(), "total": totalPrice})
 }
+
+func GetOrder(c *gin.Context) {
+	userID, exists := c.Get("userID")
+	if !exists {
+		log.Println("Unauthorized access: missing userID")
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	userIDStr, ok := userID.(string)
+	if !ok {
+		log.Println("Invalid user ID format:", userID)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID format"})
+		return
+	}
+
+	userObjectID, err := primitive.ObjectIDFromHex(userIDStr)
+	if err != nil {
+		log.Println("Invalid user ID:", userIDStr, err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	orderCollection := database.GetCollection("orders")
+	gameCollection := database.GetCollection("games")
+
+	// Поиск заказов пользователя
+	cursor, err := orderCollection.Find(context.TODO(), bson.M{"user_id": userObjectID})
+	if err != nil {
+		log.Println("Error finding orders:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching orders"})
+		return
+	}
+	defer cursor.Close(context.TODO())
+
+	// Перебираем заказы
+	var responseOrders []gin.H
+	for cursor.Next(context.TODO()) {
+		var order model.Order
+		if err := cursor.Decode(&order); err != nil {
+			log.Println("Error decoding order:", err)
+			continue
+		}
+
+		// Получаем детальную информацию об играх
+		var detailedItems []gin.H
+		for _, item := range order.Items {
+			var game model.Game
+			err := gameCollection.FindOne(context.TODO(), bson.M{"_id": item.GameID}).Decode(&game)
+			if err != nil {
+				if err == mongo.ErrNoDocuments {
+					log.Println("Game not found for game_id:", item.GameID)
+					continue
+				}
+				log.Println("Error fetching game details for game_id:", item.GameID, err)
+				continue
+			}
+
+			detailedItems = append(detailedItems, gin.H{
+				"id":    game.ID, // Преобразуем ObjectID в строку
+				"title": game.Title,
+				"price": game.Price,
+			})
+		}
+
+		// Формируем структуру заказа для ответа
+		responseOrders = append(responseOrders, gin.H{
+			"id":     order.ID.Hex(),
+			"total":  order.Total,
+			"status": order.Status,
+			"games":  detailedItems,
+		})
+	}
+
+	// Если заказов нет, возвращаем пустой массив
+	if len(responseOrders) == 0 {
+		log.Println("No orders found for user:", userIDStr)
+		c.JSON(http.StatusOK, gin.H{"orders": []gin.H{}})
+		return
+	}
+
+	// Отправляем клиенту список заказов и игр
+	log.Println("Sending response orders:", responseOrders)
+	c.JSON(http.StatusOK, gin.H{"orders": responseOrders})
+}
