@@ -4,8 +4,10 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -13,7 +15,16 @@ import (
 var client *mongo.Client
 
 func ConnectDB() {
-	uri := "mongodb+srv://aitustudent:6t3r1BnNWqa6N38c@gamelog.oo711.mongodb.net/"
+	// Загружаем переменные окружения из .env
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("❌ Ошибка загрузки .env файла")
+	}
+
+	// Получаем URI из переменной окружения
+	uri := os.Getenv("MONGO_URI")
+	if uri == "" {
+		log.Fatal("❌ MONGO_URI не найден в .env файле")
+	}
 
 	clientOptions := options.Client().ApplyURI(uri)
 
@@ -23,33 +34,33 @@ func ConnectDB() {
 	var err error
 	client, err = mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatal("❌ Can not connect to MongoDB:", err)
+		log.Fatal("❌ Не удалось подключиться к MongoDB:", err)
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal("❌ Can not ping MongoDB:", err)
+		log.Fatal("❌ Не удалось выполнить ping MongoDB:", err)
 	}
 
-	fmt.Println("✅ Successfully connected to MongoDB")
+	fmt.Println("✅ Успешное подключение к MongoDB")
 }
 
-// GetCollection returns a MongoDB collection
+// GetCollection возвращает коллекцию MongoDB
 func GetCollection(collectionName string) *mongo.Collection {
 	if client == nil {
-		log.Fatal("❌ Database is not connected")
+		log.Fatal("❌ База данных не подключена")
 	}
 	return client.Database("game_log").Collection(collectionName)
 }
 
-// CloseDB closes the MongoDB connection
+// CloseDB закрывает соединение с MongoDB
 func CloseDB() {
 	if client != nil {
 		err := client.Disconnect(context.TODO())
 		if err != nil {
-			log.Fatal("❌ Can not disconnect from MongoDB:", err)
+			log.Fatal("❌ Не удалось отключиться от MongoDB:", err)
 		} else {
-			fmt.Println("✅ Connection to MongoDB is closed")
+			fmt.Println("✅ Соединение с MongoDB закрыто")
 		}
 	}
 }

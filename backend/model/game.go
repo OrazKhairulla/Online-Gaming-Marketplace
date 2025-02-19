@@ -13,4 +13,5 @@ type Game struct {
 	Publisher   string    `json:"publisher" bson:"publisher"`
 	Platforms   []string  `json:"platforms" bson:"platforms"`
 	ImageURL    string    `json:"image_url" bson:"image_url"`
+	DownloadURL string    `json:"download_url" bson:"download_url"` // Новое поле
 }

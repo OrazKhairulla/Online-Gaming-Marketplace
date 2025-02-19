@@ -19,8 +19,8 @@ func SetupRoutes(r *gin.Engine) {
 		protected.GET("/protected", func(c *gin.Context) {
 			c.JSON(200, gin.H{"message": "You are authorized"})
 		})
-
 		// User routes
+		protected.GET("/user/download/:game_id", controllers.DownloadGame)
 		protected.POST("/user/update", controllers.UpdateUser)
 		protected.GET("/user/library", controllers.GetUserLibrary)
 

@@ -18,6 +18,8 @@ func main() {
 	// used to serve static files of front
 	r.Static("/FrontEnd", "../FrontEnd")
 	r.StaticFile("/", "../FrontEnd/public/index.html")
+	// Разрешаем доступ к папке с файлами игр
+	r.Static("/game_files", "./game_files")
 
 	routes.SetupRoutes(r)
 	port := ":8080"
