@@ -1,3 +1,4 @@
+// authControl.go
 package controllers
 
 import (
@@ -101,8 +102,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// generate jwt token
-	token, err := jwtServices.GenerateToken(user.ID.Hex(), user.Username)
+	token, err := jwtServices.GenerateToken(user.ID.Hex(), user.Username) //  Если роль берем из БД
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
 		return
